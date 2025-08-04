@@ -1,0 +1,49 @@
+#!/bin/bash
+
+bgDir="$HOME/.me/bgs/"
+
+pre () {
+  if [ ! -n "$bgDir" ]; then
+    echo "background image firectory not found" && exit 1
+  fi
+
+  sxiv -v 1>/dev/null || echo "sciv not installed"
+  feh -v 1>/dev/null || echo "feh not installed"
+}
+
+selectImage (){
+  bgImage="$(sxiv -o -r -t $bgDir)"
+}
+
+runWal (){
+  feh --bg-fill --no-xinerama "$1"
+}
+
+buildSuckless() {
+  kitty sudo sucklessInstall
+}
+
+setXresources () {
+  cat ~/.cache/wal/colors.Xresources > ~/.Xresources && xrdb ~/.Xresources
+}
+
+reloadWindowmanager () {
+  xdotool key Super_L+Shift_L+q
+}
+
+finish () {
+  notify-send --icon="$1" "Theme created" "from $1"
+}
+
+browserCSS () {
+  sed -i 1,28d  ~/.mozilla/firefox/lk2u0692.default/chrome/user*
+}
+
+
+pre
+selectImage
+runWal "$bgImage"
+buildSuckless
+setXresources
+reloadWindowmanager
+finish "$bgImage"
