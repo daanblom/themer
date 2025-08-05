@@ -27,9 +27,13 @@
     --color15: #cecabb;
 }
 
+#navigator-toolbox {
+  border-bottom: 0px !important;
+}
+
 #TabsToolbar{
   background: var(--color0) !important;
-  height: 150px !important;
+  height: 200px !important;
 }
 #tabbrowser-arrowscrollbox > .tabbrowser-tab{
   background: var(--color0) !important;
@@ -39,6 +43,7 @@
 }
 #nav-bar, #PersonalToolbar{
   background: var(--color0) !important;
+  height: 40px !important;
 }
 #urlbar{
   color: var(--color7) !important;
@@ -149,4 +154,3 @@ slot:hover{
   border-color: var(--color1) !important;
   background-color: var(--color0) !important;
 }
-
