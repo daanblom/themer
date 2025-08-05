@@ -27,6 +27,14 @@
     --color15: #cecabb;
 }
 
+@-moz-document url("about:newtab"),
+               url("about:home")
+{
+  :root[lwt-newtab-brighttext] {
+    --newtab-background-color: var(--color0) !important;
+  }
+}
+
 body.dark {
   color: var(--foreground) !important;
   background-color: var(--background) !important;
@@ -50,4 +58,9 @@ body.dark strong {
 
 a {
   color: var(--color5) !important;
+}
+
+::selection {
+  color: var(--colorr0);
+  background-color: var(--color1);
 }
