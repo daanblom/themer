@@ -1,9 +1,3 @@
-[submodule "build/material-fox-updated"]
-	path = build/material-fox-updated
-	url = https://github.com/edelvarden/material-fox-updated/
 [submodule "build/pywalQute"]
 	path = build/pywalQute
 	url = https://github.com/makman12/pywalQute
-[submodule "build/firefox-plus"]
-	path = build/firefox-plus
-	url = https://github.com/amnweb/firefox-plus
