@@ -27,6 +27,10 @@
     --color15: #cecabb;
 }
 
+:root:not([privatebrowsingmode], [firefoxviewhidden]) :is(toolbarbutton, toolbarpaletteitem) + #tabbrowser-tabs, :root[privatebrowsingmode]:not([firefoxviewhidden]) :is(toolbarbutton:not(#firefox-view-button), toolbarpaletteitem:not(#wrapper-firefox-view-button)) + #tabbrowser-tabs {
+  border-inline-start: 1px solid color-mix(in srgb, var(--color4) 11%, transparent) !important;
+}
+
 #navigator-toolbox {
   border-bottom: 0px !important;
 }
