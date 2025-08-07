@@ -1,21 +1,41 @@
 #!/bin/bash
 
-bgDir="$HOME/.me/bgs/"
-dwm="/home/db/Local/suckless/dwm"
-dmenu="/home/db/Local/suckless/dmenu"
+set -eo pipefail
 
-pre () {
+bgDir="$HOME/.me/bgs/"
+dwm="$HOME/Local/suckless/dwm"
+dmenu="$HOME/Local/suckless/dmenu"
+dunst="$HOME/.config/dunst/"
+
+config="$HOME/.config/themer"
+workDir="$(pwd)"
+
+pre (){
+  if [ ! -n "$config" ]; then
+    alert "Error!" "themer does not seem to be installed, please run the install script first!"
+  fi
+
   if [ ! -n "$bgDir" ]; then
     echo "background image firectory not found" && exit 1
   fi
 
-  sxiv -v 1>/dev/null || echo "sciv not installed"
-  feh -v 1>/dev/null || echo "feh not installed"
+  # Required
+  for cmd in sxiv feh wal; do
+    command -v "$cmd" || alert "Error!" "$cmd is not installed"
+  done
+  # Optional
+  for cmd in dwm dunst dmenu firefox qutebrowser; do
+    if ! command -v "$cmd" /dev/null; then
+      declare "$cmd="
+    fi
+  done
 }
 
 selectImage (){
   bgImage="$(sxiv -o -r -t $bgDir)"
-  if [ -z "$bgImage" ]; then alert "Oops!" "No image selcted, exitting.." && exit 1 ; fi
+  if [ -z "$bgImage" ]; then 
+    alert "Oops!" "No image selcted, exitting.." && exit 1; 
+  fi
 }
 
 setWallpaper (){
@@ -29,72 +49,79 @@ createColorscheme () {
 buildSuckless() {
   cd $dwm && sudo make clean install
   cd $dmenu && sudo make clean install
+  cd "$workDir"
 }
 
 setXresources () {
   cat ~/.cache/wal/colors.Xresources > ~/.Xresources && xrdb ~/.Xresources
 }
 
+setDunst () {
+  cp -f "$HOME/.cache/wal/dunstrc" "$dunst"
+}
+
 reloadWindowmanager () {
-  xdotool key Super_L+Shift_L+q
+  # xdotool key Super_L+Shift_L+q
+  killall dwm && killall dwmblocks
 }
 
 firefoxCSS () {
-  #check if multiple user profiles exsist
-  if [[ $(find ~/.mozilla/firefox/ -type d -iname "*.default" | wc -l) -gt 1 ]]; then
-    echo "More then one user profile exsist, please hard code you prefered profile in the script."
-    exit 1
+  #check if multiple user profiles exists
+  if [[ $(find $HOME/.mozilla/firefox/ -type d -iname "*.default" | wc -l) -gt 1 ]]; then
+    alert "Alert!" "there seem to be multiple user directories for firefox, please pick which one to use"
+    folder="$(find $HOME/.mozilla/firefox/ -type d -iname "*.default" | dmenu -l 10)"
+    if [ "$folder" = "" ]; then exit 1 ;fi 
+  elif [[ $(find $HOME/.mozilla/firefox/ -type d -iname "*.default" | wc -l) -eq 1 ]]; then
+    folder=$(echo "$HOME"/.mozilla/firefox/*.default)
   fi
-  folder=$(echo "$HOME"/.mozilla/firefox/*.default)
+
   if [ ! -d  "$folder/chrome" ]; then
      mkdir -p "$folder/chrome"
      echo "chrome folder created."
   fi
-  cp -f ./build/firefox/userContent.css "$folder/chrome"
-  cp -f ./build/firefox/userChrome.css "$folder/chrome"
 
-  local chrome="$(echo $folder/chrome/userChrome.css)"
-  local content="$(echo $folder/chrome/userContent.css)"
+  cp -f "./build/firefox/userContent.css" "$folder/chrome"
+  cp -f "./build/firefox/userChrome.css" "$folder/chrome"
 
-  if [[ $(head -n 1 "$chrome" | grep -c "/* CSS variables") -eq 1 ]]; then
-    sed -i 1,28d "$chrome"
-    cat "$HOME/.cache/wal/colors.css" "$chrome"> temp && mv temp "$chrome"
-  fi
+   local chrome="$(echo $folder/chrome/userChrome.css)"
+   local content="$(echo $folder/chrome/userContent.css)"
+  
+   if [[ $(head -n 1 "$chrome" | grep -c "/* CSS variables") -eq 1 ]]; then
+     sed -i 1,28d "$chrome"
+     cat "$HOME/.cache/wal/colors.css" "$chrome"> temp && mv temp "$chrome"
+   fi
+  
+   if [[ $(head -n 1 "$content" | grep -c "/* CSS variables") -eq 1 ]]; then
+     sed -i 1,28d "$content"
+     cat "$HOME/.cache/wal/colors.css" "$content"> temp && mv temp "$content"
+   fi
 
-  if [[ $(head -n 1 "$content" | grep -c "/* CSS variables") -eq 1 ]]; then
-    sed -i 1,28d "$content"
-    cat "$HOME/.cache/wal/colors.css" "$content"> temp && mv temp "$content"
-  fi
-
-  alert "Done!" "Firefox CSS set succesfully."
 }
 
 qutebrowserCSS (){
-  command -v qutebrowser 1>/dev/null || { echo "Qutebrowser not installed, skipping..."; return 1; }
-
+  command -v qutwwebrowser 1>/dev/null || { echo "Qutebrowser not installed, skipping..."; return 1; }
   if [[ $(cat $HOME/.config/qutebrowser/config.py | grep -c "import pywalQute.draw") -eq 1 ]]; then
-    echo "Plugin already installed, skipping... checking if pywalQute folder exsist:"
+    echo "Plugin already installed, skipping... checking if pywalQute folder exsist"
   fi
-
-  if [ -z .config/qutebrowser/pywalQute/ ]; then
-    echo "pywalQute folder is there." || { echo "Qutebrowser exention seems to be installed correctly, continueing..."; return 1; }
+  if [ -d ".config/qutebrowser/pywalQute/" ]; then
+    return 1
   elif [ ! -d .config/qutebrowser/pywalQute/ ]; then
-    cp -r ./build/pywalQute/ $HOME/.config/qutebrowser
-    echo "pywalQute folder installed."
+    cp -r "./build/pywalQute" "$HOME/.config/qutebrowser/"
   fi
-  echo "$( cat ./build/pywalQute/snippet )" >> "$HOME/.config/qutebrowser/config.py"
+  echo "$(cat ./build/pywalQute/snippet )" >> "$HOME/.config/qutebrowser/config.py"
 }
 
 alert (){
   notify-send --icon="$3" "$1" "$2"
 }
 
-
+pre 2&>1
 selectImage
-setWallpaper "$bgImage" && alert "Done!" "Background image is set" "$bgImage"
-createColorscheme && alert "Done!" "Colorscheme is set" "$bgImage"
-buildSuckless && alert "Suckless build suckessfully."  "$bgImage"
-setXresources
-firefoxCSS
-qutebrowserCSS
-reloadWindowmanager
+setWallpaper "$bgImage" 2&>1 /dev/null  && alert "Done!" "Background image is set" "$bgImage"
+createColorscheme 2&>1 /dev/null && alert "Done!" "Colorscheme is set" "$bgImage"
+buildSuckless 2&>1 /dev/null && alert "Suckless build suckessfully."  "$bgImage"
+setDunst 2&>1 /dev/null  && alert "Done!" "Dunst set succesfully."
+setXresources 2&>1 /dev/null  && alert "Done!" "Xresources set succesfully."
+firefoxCSS && alert "Done!" "Firefox CSS set succesfully."
+qutebrowserCSS 2&>1 /dev/null && alert "Done!" "Qutebrowser CSS set succesfully."
+# reloadWindowmanager 2&>1 /dev/null  
