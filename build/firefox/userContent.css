@@ -28,7 +28,8 @@
 }
 
 @-moz-document url("about:newtab"),
-               url("about:home")
+               url("about:home"),
+               url("about:sessionrestore")
 {
   :root[lwt-newtab-brighttext] {
     --newtab-background-color: var(--color0) !important;
@@ -42,6 +43,11 @@ body.dark {
 
 body.dark h1 {
   color: var(--color1) !important;
+}
+
+.top-site-outer .tile {
+  background-color: none !important;
+  border-shadow: 0px 0px 0px !important;
 }
 
 body.dark h2,

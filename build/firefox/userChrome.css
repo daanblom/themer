@@ -35,6 +35,18 @@
   border-bottom: 0px !important;
 }
 
+.top-site-outer .tile{
+  background-color: transparent !important;
+}
+
+.top-sites-list:not(.dnd-active) .top-site-outer:is(.active, :focus, :hover) {
+  border-inline-start: 1px solid color-mix(in srgb, var(--color4) 11%, transparent) !important;
+}
+
+.search-wrapper .search-handoff-button, .search-wrapper input {
+  border-inline-start: 1px solid color-mix(in srgb, var(--color4) 11%, transparent) !important;
+}
+
 #TabsToolbar{
   background: var(--color0) !important;
   height: 200px !important;
