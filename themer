@@ -3,11 +3,15 @@
 set -eo pipefail
 
 pre (){
-  if [ ! -n "$config" ]; then
-    alert "Error!" "themer does not seem to be installed, please run the install script first!"
+  config="$HOME/.config/themer"
+
+  if [ ! -d "$config" ]; then
+    alert "Error!" "themer does not seem to be installed, please run the install script first!" && exit 1
   fi
 
-  if [ ! -n "$bgDir" ]; then
+  source $config/themer.conf
+
+  if [ ! -d "$bgDir" ]; then
     echo "background image firectory not found" && exit 1
   fi
 
