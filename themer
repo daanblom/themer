@@ -58,8 +58,7 @@ setDunst () {
 }
 
 reloadWindowmanager () {
-  # xdotool key Super_L+Shift_L+q
-  killall dwm && killall dwmblocks
+  kill -HUP $(pidof dwm)
 }
 
 firefoxCSS () {
