@@ -2,14 +2,6 @@
 
 set -eo pipefail
 
-bgDir="$HOME/.me/bgs/"
-dwm="$HOME/Local/suckless/dwm"
-dmenu="$HOME/Local/suckless/dmenu"
-dunst="$HOME/.config/dunst/"
-
-config="$HOME/.config/themer"
-workDir="$(pwd)"
-
 pre (){
   if [ ! -n "$config" ]; then
     alert "Error!" "themer does not seem to be installed, please run the install script first!"
