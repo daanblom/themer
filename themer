@@ -43,6 +43,7 @@ createColorscheme () {
 }
 
 buildSuckless() {
+  workDir="$(pwd)"
   cd $dwm && sudo make clean install
   cd $dmenu && sudo make clean install
   cd "$workDir"
@@ -111,13 +112,13 @@ alert (){
   notify-send --icon="$3" "$1" "$2"
 }
 
-pre 2&>1
+pre 1>/dev/null
 selectImage
-setWallpaper "$bgImage" 2&>1 /dev/null  && alert "Done!" "Background image is set" "$bgImage"
+setWallpaper "$bgImage" 2&>1 /dev/null && alert "Done!" "Background image is set" "$bgImage"
 createColorscheme 2&>1 /dev/null && alert "Done!" "Colorscheme is set" "$bgImage"
 buildSuckless 2&>1 /dev/null && alert "Suckless build suckessfully."  "$bgImage"
 setDunst 2&>1 /dev/null  && alert "Done!" "Dunst set succesfully."
 setXresources 2&>1 /dev/null  && alert "Done!" "Xresources set succesfully."
 firefoxCSS && alert "Done!" "Firefox CSS set succesfully."
 qutebrowserCSS 2&>1 /dev/null && alert "Done!" "Qutebrowser CSS set succesfully."
-# reloadWindowmanager 2&>1 /dev/null  
+reloadWindowmanager 2&>1 /dev/null  
