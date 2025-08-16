@@ -23,7 +23,7 @@ pre (){
   done
   # Optional
   for cmd in dwm dunst dmenu firefox qutebrowser; do
-    if ! command -v "$cmd" /dev/null; then
+    if ! command -v "$cmd" >/dev/null 2>&1; then
       declare "$cmd="
     fi
   done
