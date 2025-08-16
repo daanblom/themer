@@ -99,16 +99,16 @@ firefoxCSS () {
 }
 
 qutebrowserCSS (){
-  command -v qutwwebrowser 1>/dev/null || { echo "Qutebrowser not installed, skipping..."; return 1; }
+  command -v qutebrowser 1>/dev/null || { echo "Qutebrowser not installed, skipping..."; return 1; }
   if [[ $(cat $HOME/.config/qutebrowser/config.py | grep -c "import pywalQute.draw") -eq 1 ]]; then
     echo "Plugin already installed, skipping... checking if pywalQute folder exsist"
   fi
-  if [ -d ".config/qutebrowser/pywalQute/" ]; then
-    return 1
+  if [ -d "$HOME/.config/qutebrowser/pywalQute/" ]; then
+    alert "Done!" "Qutebrowser was allready had the wal plugin installed" &&  return 1
   elif [ ! -d .config/qutebrowser/pywalQute/ ]; then
-    cp -r "./build/pywalQute" "$HOME/.config/qutebrowser/"
+    cp -r "$build/pywalQute" "$HOME/.config/qutebrowser/"
   fi
-  echo "$(cat ./build/pywalQute/snippet )" >> "$HOME/.config/qutebrowser/config.py"
+  cat "$build/pywalQute/snippet" >> "$HOME/.config/qutebrowser/config.py"
 }
 
 alert (){
