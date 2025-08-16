@@ -78,20 +78,22 @@ firefoxCSS () {
      echo "chrome folder created."
   fi
 
-  cp -f "./build/firefox/userContent.css" "$folder/chrome"
-  cp -f "./build/firefox/userChrome.css" "$folder/chrome"
+  cp -f "$build/firefox/userContent.css" "$folder/chrome"
+  cp -f "$build/firefox/userChrome.css" "$folder/chrome"
 
    local chrome="$(echo $folder/chrome/userChrome.css)"
    local content="$(echo $folder/chrome/userContent.css)"
   
    if [[ $(head -n 1 "$chrome" | grep -c "/* CSS variables") -eq 1 ]]; then
      sed -i 1,28d "$chrome"
-     cat "$HOME/.cache/wal/colors.css" "$chrome"> temp && mv temp "$chrome"
+     tmpfile=$(mktemp)
+     cat "$HOME/.cache/wal/colors.css" "$chrome" > "$tmpfile" && mv "$tmpfile" "$chrome"
    fi
   
    if [[ $(head -n 1 "$content" | grep -c "/* CSS variables") -eq 1 ]]; then
      sed -i 1,28d "$content"
-     cat "$HOME/.cache/wal/colors.css" "$content"> temp && mv temp "$content"
+     tmpfile=$(mktemp)
+     cat "$HOME/.cache/wal/colors.css" "$content" > "$tmpfile" && mv "$tmpfile" "$content"
    fi
 
 }
