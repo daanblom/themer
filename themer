@@ -22,7 +22,7 @@ pre (){
     command -v "$cmd" || alert "Error!" "$cmd is not installed"
   done
   # Optional
-  for cmd in dwm dunst dmenu firefox qutebrowser; do
+  for cmd in dwm dunst dmenu firefox qutebrowser colorz; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
       declare "$cmd="
     fi
@@ -41,7 +41,7 @@ setWallpaper (){
 }
 
 createColorscheme () {
-  wal -i "$bgImage"
+  wal --backend colorz -i "$bgImage"
 }
 
 buildSuckless() {
