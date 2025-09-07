@@ -24,7 +24,7 @@ pre (){
   # Optional
   for cmd in dwm dunst dmenu firefox qutebrowser colorz; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
-      declare "$cmd="
+      declare "$cmd=false"
     fi
   done
 }
@@ -41,7 +41,11 @@ setWallpaper (){
 }
 
 createColorscheme () {
-  wal --backend colorz -i "$bgImage"
+  if [ ! $colorz ]; then
+    wal -i "$bgImage"
+  else
+    wal --backend colorz -i "$bgImage"
+  fi
 }
 
 buildSuckless() {
