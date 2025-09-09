@@ -44,7 +44,7 @@ createColorscheme () {
   if [ ! $colorz ]; then
     wal -n -i "$bgImage"
   else
-    wal --backend colorz -i "$bgImage"
+    wal -n --backend colorz -i "$bgImage"
   fi
 }
 
