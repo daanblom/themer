@@ -42,7 +42,7 @@ setWallpaper (){
 
 createColorscheme () {
   if [ ! $colorz ]; then
-    wal -i "$bgImage"
+    wal -n -i "$bgImage"
   else
     wal --backend colorz -i "$bgImage"
   fi
@@ -60,7 +60,7 @@ setXresources () {
 }
 
 setDunst () {
-  cp -f "$HOME/.cache/wal/dunstrc" "$dunst"
+  cp -f "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/"
 }
 
 reloadWindowmanager () {
